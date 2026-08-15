@@ -1,23 +1,9 @@
 import { PrismaClient } from "./generated/prisma/client";
-import { PrismaMariaDb } from "@prisma/adapter-mariadb";
-import mariadb from "mariadb";
 import bcrypt from "bcryptjs";
 import 'dotenv/config';
 
 async function main() {
-  const dbUrlStr = process.env.DATABASE_URL as string;
-  const parsedUrl = new URL(dbUrlStr);
-  const adapterConfig = {
-    host: parsedUrl.hostname === 'localhost' ? '127.0.0.1' : parsedUrl.hostname,
-    port: parseInt(parsedUrl.port || "3306", 10),
-    user: parsedUrl.username,
-    password: parsedUrl.password, // Correctly pass empty string for empty passwords
-    database: parsedUrl.pathname.substring(1),
-    connectionLimit: 5
-  };
-  const adapter = new PrismaMariaDb(adapterConfig);
-  
-  const prisma = new PrismaClient({ adapter });
+  const prisma = new PrismaClient();
 
   const email = "admin@trotsolutions.com";
   const password = "admin";
