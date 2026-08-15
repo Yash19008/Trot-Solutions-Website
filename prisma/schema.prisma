@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // Hashed password
+  name      String?
+  createdAt DateTime @default(now())
+}
+
+model Blog {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  image     String?
+  excerpt   String?  @db.Text
+  content   String   @db.Text
+  status    String   @default("draft") // "draft" or "published"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TechTalk {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  image     String?
+  excerpt   String?  @db.Text
+  content   String   @db.Text
+  status    String   @default("draft") // "draft" or "published"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Career {
+  id            String   @id @default(cuid())
+  title         String
+  position      String
+  image         String?
+  location      String
+  deadline      DateTime?
+  excerpt       String?  @db.Text
+  jobDetailsPdf String?
+  status        String   @default("open") // "open" or "closed"
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Equipment {
+  id          String   @id @default(cuid())
+  title       String
+  image       String?
+  image2      String?
+  image3      String?
+  image4      String?
+  image5      String?
+  modelNo     String?
+  stock       Int?     @default(0)
+  location    String?
+  incoterms   String?
+  status      String   @default("available") // "available" or "sold"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model InquiryLead {
+  id          String   @id @default(cuid())
+  name        String
+  companyName String?
+  email       String
+  phone       String
+  userType    String?  // "Customer" | "Job Seeker" | null
+  category    String
+  message     String   @db.Text
+  status      String   @default("NEW") 
+  createdAt   DateTime @default(now())
+}
+
+model CareerLead {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  resumeUrl   String?
+  coverLetter String? @db.Text
+  position    String?
+  status      String   @default("NEW") 
+  createdAt   DateTime @default(now())
+}
+
+model SmtpConfig {
+  id          String   @id @default(cuid())
+  host        String
+  port        Int
+  secure      Boolean  @default(true)
+  user        String
+  password    String   
+  fromEmail   String
+  notifyEmail String?
+  updatedAt   DateTime @updatedAt
+}
