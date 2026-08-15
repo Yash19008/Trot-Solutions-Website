@@ -1,0 +1,43 @@
+name: CI — Pull Request Checks
+
+# Runs on every pull request targeting the latest branch
+on:
+  pull_request:
+    branches:
+      - latest
+
+jobs:
+  check:
+    name: Type-Check & Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+        env:
+          DATABASE_URL: "mysql://ci:ci@localhost:3306/ci"
+
+      - name: Type-check
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build Next.js (verify no build errors)
+        run: npm run build
+        env:
+          DATABASE_URL: "mysql://ci:ci@localhost:3306/ci"
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
